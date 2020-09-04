@@ -1,2 +1,2 @@
 # community-infra
-Infrastructure for KubeEdge project
+This repo contains configurations of infrastructure and automations for KubeEdge project
