@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tide
+  namespace: kubeedge-prowbot
+spec:
+  clusterIP: 10.97.69.73
+  externalTrafficPolicy: Cluster
+  ports:
+  - nodePort: 31351
+    port: 80
+    protocol: TCP
+    targetPort: 8888
+  selector:
+    app: tide
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}

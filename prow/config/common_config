@@ -1,0 +1,38 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: config
+  namespace: kubeedge-prowbot
+data:
+  config.yaml: |+
+    prowjob_namespace: kubeedge-prowbot
+    pod_namespace: test-pods
+
+    tide:
+      sync_period: 1m
+      target_url: http://159.138.22.214:31351/
+      queries:
+        - repos:
+            - kubeedge/kubeedge
+            - kubeedge/viaduct
+            - kubeedge/beehive
+            - kubeedge/website
+            - kubeedge/community
+          labels:
+            - lgtm
+            - approved
+          missingLabels:
+            - do-not-merge
+            - do-not-merge/hold
+            - do-not-merge/invalid-owners-file
+            - do-not-merge/work-in-progress
+            - needs-rebase
+      merge_method:
+        kubeedge/kubeedge: merge
+        kubeedge/viaduct: merge
+        kubeedge/beehive: merge
+        kubeedge/website: merge
+      blocker_label: tide/merge-blocker
+      squash_label: tide/merge-method-squash
+      rebase_label: tide/merge-method-rebase
+      merge_label: tide/merge-method-merge
