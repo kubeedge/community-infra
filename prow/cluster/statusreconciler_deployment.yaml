@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: statusreconciler
+  name: statusreconciler
+  namespace: kubeedge-prowbot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: statusreconciler
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: statusreconciler
+    spec:
+      containers:
+      - args:
+        - --dry-run=false
+        - --continue-on-error=true
+        - --plugin-config=/etc/plugins/plugins.yaml
+        - --config-path=/etc/config/config.yaml
+        - --github-endpoint=http://ghproxy
+        - --github-endpoint=https://api.github.com
+        - --github-token-path=/etc/github/oauth
+        image: gcr.io/k8s-prow/status-reconciler:v20201026-f7d653694b
+        imagePullPolicy: IfNotPresent
+        name: statusreconciler
+        volumeMounts:
+        - mountPath: /etc/github
+          name: oauth
+          readOnly: true
+        - mountPath: /etc/config
+          name: config
+          readOnly: true
+        - mountPath: /etc/plugins
+          name: plugins
+          readOnly: true
+      volumes:
+      - name: oauth
+        secret:
+          defaultMode: 420
+          secretName: oauth-token
+      - configMap:
+          defaultMode: 420
+          name: config
+        name: config
+      - configMap:
+          defaultMode: 420
+          name: plugins
+        name: plugins

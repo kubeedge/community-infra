@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: tide
+  name: tide
+  namespace: kubeedge-prowbot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tide
+  template:
+    metadata:
+      labels:
+        app: tide
+    spec:
+      serviceAccountName: tide
+      containers:
+      - args:
+        - --dry-run=false
+        - --github-token-path=/etc/github/oauth
+        - --github-endpoint=http://ghproxy
+        - --github-endpoint=https://api.github.com
+        - --config-path=/etc/config/config.yaml
+        image: gcr.io/k8s-prow/tide:v20201026-f7d653694b
+        imagePullPolicy: IfNotPresent
+        name: tide
+        ports:
+        - containerPort: 8888
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /etc/github
+          name: oauth
+          readOnly: true
+        - mountPath: /etc/config
+          name: config
+          readOnly: true
+      volumes:
+      - name: oauth
+        secret:
+          secretName: oauth-token
+      - configMap:
+          name: config
+        name: config

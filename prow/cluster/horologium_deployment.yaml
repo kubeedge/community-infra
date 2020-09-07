@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: horologium
+  name: horologium
+  namespace: kubeedge-prowbot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: horologium
+  template:
+    metadata:
+      labels:
+        app: horologium
+    spec:
+      containers:
+      - args:
+        - --config-path=/etc/config/config.yaml
+        - --deck-url=http:deck:888
+        - --dry-run=false
+        image: gcr.io/k8s-prow/horologium:v20201026-f7d653694b
+        imagePullPolicy: IfNotPresent
+        name: horologium
+        volumeMounts:
+        - mountPath: /etc/config
+          name: config
+          readOnly: true
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: config
+        name: config
