@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kubeedge-prowbot
+  name: ghproxy
+  labels:
+    app: ghproxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ghproxy
+  template:
+    metadata:
+      labels:
+        app: ghproxy
+    spec:
+      containers:
+      - name: ghproxy
+        image: gcr.io/k8s-prow/ghproxy:v20201026-f7d653694b
+        args:
+        - --cache-dir=/cache
+        - --cache-sizeGB=99
+        - --serve-metrics=true
+        ports:
+        - containerPort: 8888
+        volumeMounts:
+        - name: cache
+          mountPath: /cache
+      volumes:
+      - name: cache
+        hostPath:
+          path: /ghproxy

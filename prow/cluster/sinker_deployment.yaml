@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: sinker
+  name: sinker
+  namespace: kubeedge-prowbot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sinker
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: sinker
+    spec:
+      containers:
+      - args:
+        - --config-path=/etc/config/config.yaml
+        - --dry-run=false
+        image: gcr.io/k8s-prow/sinker:v20201026-f7d653694b
+        imagePullPolicy: IfNotPresent
+        name: sinker
+        volumeMounts:
+        - mountPath: /etc/config
+          name: config
+          readOnly: true
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: config
+        name: config

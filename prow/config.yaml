@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+  namespace: kubeedge-prowbot
+data:
+  config.yaml: |+
+    prowjob_namespace: kubeedge-prowbot
+    pod_namespace: test-pods
+    log_level: debug
+
+    sinker:
+      resync_period: 1m
+      max_prowjob_age: 48h
+      max_pod_age: 48h
+      terminated_pod_ttl: 30m
+
+    tide:
+      sync_period: 1m
+      target_url: http://prow.kubeedge.io/tide
+
+      queries:
+        - orgs:
+            - kubeedge
+          labels:
+            - lgtm
+            - approved
+          missingLabels:
+            - do-not-merge
+            - do-not-merge/hold
+            - do-not-merge/invalid-owners-file
+            - do-not-merge/work-in-progress
+            - needs-rebase
+      merge_method:
+        kubeedge/kubeedge: merge
+        kubeedge/viaduct: merge
+        kubeedge/beehive: merge
+        kubeedge/website: merge
+      context_options:
+        skip-unknown-contexts: true
+      blocker_label: tide/merge-blocker
+      squash_label: tide/merge-method-squash
+      rebase_label: tide/merge-method-rebase
+      merge_label: tide/merge-method-merge

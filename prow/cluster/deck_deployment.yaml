@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: deck
+  name: deck
+  namespace: kubeedge-prowbot
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: deck
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: deck
+    spec:
+      serviceAccountName: deck
+      containers:
+      - args:
+        - --config-path=/etc/config/config.yaml
+        - --plugin-config=/etc/plugins/plugins.yaml
+        - --tide-url=http://tide
+        - --hook-url=http://hook:8888/plugin-help
+        - --redirect-http-to=prow.kubeedge.io
+        - --github-endpoint=http://ghproxy
+        - --github-endpoint=https://api.github.com
+        - --spyglass=true
+        image: gcr.io/k8s-prow/deck:v20201026-f7d653694b
+        imagePullPolicy: IfNotPresent
+        name: deck
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /etc/config
+          name: config
+          readOnly: true
+        - mountPath: /etc/plugins
+          name: plugins
+          readOnly: true
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /healthz/ready
+            port: 8081
+          initialDelaySeconds: 10
+          periodSeconds: 3
+          timeoutSeconds: 600
+      volumes:
+      - configMap:
+          name: config
+        name: config
+      - configMap:
+          name: plugins
+        name: plugins

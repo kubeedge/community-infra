@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: plugins
+  namespace: kubeedge-prowbot
+data:
+  plugins.yaml: |
+    triggers:
+    - repos:
+      - kubeedge
+      join_org_url: "https://github.com/kubeedge/kubeedge/blob/master/OWNERS"
+      only_org_members: true
+
+    owners:
+      skip_collaborators:
+      - kubeedge/kubeedge
+
+    approve:
+    - repos:
+      - kubeedge/kubeedge
+      - kubeedge/viaduct
+      - kubeedge/beehive
+      - kubeedge/website
+      - kubeedge/community
+      require_self_approval: true
+      lgtm_acts_as_approve: false
+
+    lgtm:
+    - repos:
+      - kubeedge/kubeedge
+      - kubeedge/viaduct
+      - kubeedge/beehive
+      - kubeedge/website
+      - kubeedge/community
+      review_acts_as_lgtm: true
+
+    label:
+      additional_labels:
+        - tide/merge-method-merge
+        - tide/merge-method-rebase
+        - tide/merge-method-squash
+
+    size:
+      s:   10
+      m:   30
+      l:   100
+      xl:  500
+      xxl: 1000
+
+    plugins:
+      kubeedge:
+      - approve
+      - assign
+      - blunderbuss
+      - cat
+      - cla
+      - dog
+      - golint
+      - heart
+      - help
+      - hold
+      - invalidcommitmsg
+      - label
+      - lgtm
+      - lifecycle
+      - milestone
+      - owners-label
+      - pony
+      - shrug
+      - sigmention
+      - size
+      - skip
+      - slackevents
+      - trigger
+      - verify-owners
+      - welcome
+      - wip
+      - yuks
