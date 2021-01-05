@@ -22,6 +22,8 @@ data:
       - kubeedge/beehive
       - kubeedge/website
       - kubeedge/community
+      - kubeedge/community-infra
+      - kubeedge/mappers-go
       require_self_approval: true
       lgtm_acts_as_approve: false
 
@@ -32,6 +34,8 @@ data:
       - kubeedge/beehive
       - kubeedge/website
       - kubeedge/community
+      - kubeedge/community-infra
+      - kubeedge/mappers-go
       review_acts_as_lgtm: true
 
     label:
