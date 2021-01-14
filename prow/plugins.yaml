@@ -1,82 +1,217 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: plugins
-  namespace: kubeedge-prowbot
-data:
-  plugins.yaml: |
-    triggers:
-    - repos:
-      - kubeedge
-      join_org_url: "https://github.com/kubeedge/kubeedge/blob/master/OWNERS"
-      only_org_members: true
+triggers:
+- repos:
+  - kubeedge
+  join_org_url: "https://github.com/kubeedge/kubeedge/blob/master/OWNERS"
+  only_org_members: true
 
-    owners:
-      skip_collaborators:
-      - kubeedge/kubeedge
+owners:
+  skip_collaborators:
+  - kubeedge/kubeedge
 
-    approve:
-    - repos:
-      - kubeedge/kubeedge
-      - kubeedge/viaduct
-      - kubeedge/beehive
-      - kubeedge/website
-      - kubeedge/community
-      - kubeedge/community-infra
-      - kubeedge/mappers-go
-      require_self_approval: true
-      lgtm_acts_as_approve: false
+approve:
+- repos:
+  - kubeedge/kubeedge
+  - kubeedge/viaduct
+  - kubeedge/beehive
+  - kubeedge/website
+  - kubeedge/examples
+  - kubeedge/community
+  - kubeedge/community-infra
+  - kubeedge/mappers-go
+  require_self_approval: true
+  lgtm_acts_as_approve: false
 
-    lgtm:
-    - repos:
-      - kubeedge/kubeedge
-      - kubeedge/viaduct
-      - kubeedge/beehive
-      - kubeedge/website
-      - kubeedge/community
-      - kubeedge/community-infra
-      - kubeedge/mappers-go
-      review_acts_as_lgtm: true
+lgtm:
+- repos:
+  - kubeedge/kubeedge
+  - kubeedge/viaduct
+  - kubeedge/beehive
+  - kubeedge/website
+  - kubeedge/examples
+  - kubeedge/community
+  - kubeedge/community-infra
+  - kubeedge/mappers-go
+  review_acts_as_lgtm: true
 
-    label:
-      additional_labels:
-        - tide/merge-method-merge
-        - tide/merge-method-rebase
-        - tide/merge-method-squash
+label:
+  additional_labels:
+    - tide/merge-method-merge
+    - tide/merge-method-rebase
+    - tide/merge-method-squash
 
-    size:
-      s:   10
-      m:   30
-      l:   100
-      xl:  500
-      xxl: 1000
+size:
+  s:   10
+  m:   30
+  l:   100
+  xl:  500
+  xxl: 1000
 
-    plugins:
-      kubeedge:
-      - approve
-      - assign
-      - blunderbuss
-      - cat
-      - cla
-      - dog
-      - golint
-      - heart
-      - help
-      - hold
-      - invalidcommitmsg
-      - label
-      - lgtm
-      - lifecycle
-      - milestone
-      - owners-label
-      - pony
-      - shrug
-      - sigmention
-      - size
-      - skip
-      - slackevents
-      - trigger
-      - verify-owners
-      - welcome
-      - wip
-      - yuks
+plugins:
+  kubeedge/kubeedge:
+  - approve
+  - assign
+  - blunderbuss
+  - cla
+  - heart
+  - help
+  - hold
+  - invalidcommitmsg
+  - label
+  - lgtm
+  - lifecycle
+  - milestone
+  - owners-label
+  - pony
+  - retitle
+  - shrug
+  - sigmention
+  - size
+  - skip
+  - slackevents
+  - trigger
+  - verify-owners
+  - welcome
+  - wip
+  - yuks
+  kubeedge/website:
+  - approve
+  - assign
+  - blunderbuss
+  - cla
+  - heart
+  - help
+  - hold
+  - invalidcommitmsg
+  - label
+  - lgtm
+  - lifecycle
+  - milestone
+  - owners-label
+  - pony
+  - shrug
+  - sigmention
+  - size
+  - skip
+  - slackevents
+  - trigger
+  - verify-owners
+  - welcome
+  - wip
+  - yuks
+  kubeedge/community:
+  - approve
+  - assign
+  - blunderbuss
+  - cla
+  - heart
+  - help
+  - hold
+  - invalidcommitmsg
+  - label
+  - lgtm
+  - lifecycle
+  - milestone
+  - owners-label
+  - pony
+  - shrug
+  - sigmention
+  - size
+  - skip
+  - slackevents
+  - trigger
+  - verify-owners
+  - welcome
+  - wip
+  - yuks
+  kubeedge/community-infra:
+  - approve
+  - assign
+  - blunderbuss
+  - config-updater
+  - cla
+  - heart
+  - help
+  - hold
+  - invalidcommitmsg
+  - label
+  - lgtm
+  - lifecycle
+  - milestone
+  - owners-label
+  - pony
+  - shrug
+  - sigmention
+  - size
+  - skip
+  - slackevents
+  - trigger
+  - verify-owners
+  - welcome
+  - wip
+  - yuks
+  kubeedge/examples:
+  - approve
+  - assign
+  - blunderbuss
+  - cla
+  - heart
+  - help
+  - hold
+  - invalidcommitmsg
+  - label
+  - lgtm
+  - lifecycle
+  - milestone
+  - owners-label
+  - pony
+  - shrug
+  - sigmention
+  - size
+  - skip
+  - slackevents
+  - trigger
+  - verify-owners
+  - welcome
+  - wip
+  - yuks
+  kubeedge/mappers-go:
+  - approve
+  - assign
+  - blunderbuss
+  - cla
+  - heart
+  - help
+  - hold
+  - invalidcommitmsg
+  - label
+  - lgtm
+  - lifecycle
+  - milestone
+  - owners-label
+  - pony
+  - shrug
+  - sigmention
+  - size
+  - skip
+  - slackevents
+  - trigger
+  - verify-owners
+  - welcome
+  - wip
+  - yuks
+
+config_updater:
+  maps:
+    label_sync/labels.yaml:
+      name: label-config
+    prow/config.yaml:
+      name: config
+    prow/plugins.yaml:
+      name: plugins
+
+external_plugins:
+  kubeedge:
+  - name: needs-rebase
+    events:
+      - issue_comment
+      - pull_request
